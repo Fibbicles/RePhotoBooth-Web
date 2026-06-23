@@ -1,0 +1,141 @@
+<!-- templates/photobooth.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Re-Photo Booth</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #111;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        video, canvas, img {
+            width: 100%;
+            max-width: 700px;
+            border-radius: 20px;
+            background: black;
+        }
+
+        button {
+            margin-top: 1.5rem;
+            padding: 1rem 2rem;
+            font-size: 1.4rem;
+            border: none;
+            border-radius: 999px;
+            background: #58d68d;
+            color: #111;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Re-Photo Booth</h1>
+
+<video id="camera" autoplay playsinline></video>
+<canvas id="snapshot" style="display:none;"></canvas>
+
+<br>
+
+<button id="takePhoto">Take Photo</button>
+
+<script>
+const video = document.getElementById("camera");
+const canvas = document.getElementById("snapshot");
+const button = document.getElementById("takePhoto");
+
+async function startCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: "user",
+                width: { ideal: 1920 },
+                height: { ideal: 1080 },
+                frameRate: { ideal: 30 }
+            },
+            audio: false
+        });
+
+        video.srcObject = stream;
+    } catch (error) {
+        alert("Could not access camera: " + error);
+    }
+}
+
+button.addEventListener("click", async () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+
+    // Basic enhancement filter
+    ctx.filter = `
+        brightness(1.08)
+        contrast(1.18)
+        saturate(1.12)
+        sharpness(1)
+    `;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Optional slight sharpening
+    sharpenCanvas(ctx, canvas.width, canvas.height);
+
+    const imageData = canvas.toDataURL("image/jpeg", 0.95);
+
+    const formData = new FormData();
+    formData.append("image", imageData);
+
+    const response = await fetch("/photobooth/save/", {
+        method: "POST",
+        body: formData
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        window.location.href = result.file;
+    } else {
+        alert("Failed to save photo");
+    }
+});
+
+function sharpenCanvas(ctx, width, height) {
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    const copy = new Uint8ClampedArray(data);
+
+    const kernel = [
+         0, -1,  0,
+        -1,  5, -1,
+         0, -1,  0
+    ];
+
+    for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+            for (let c = 0; c < 3; c++) {
+                let i = (y * width + x) * 4 + c;
+
+                data[i] =
+                    copy[((y - 1) * width + x) * 4 + c] * kernel[1] +
+                    copy[(y * width + (x - 1)) * 4 + c] * kernel[3] +
+                    copy[(y * width + x) * 4 + c] * kernel[4] +
+                    copy[(y * width + (x + 1)) * 4 + c] * kernel[5] +
+                    copy[((y + 1) * width + x) * 4 + c] * kernel[7];
+            }
+        }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+}
+
+startCamera();
+</script>
+
+
+
+</body>
+</html>
