@@ -21,12 +21,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ow)vi#39zt6(m94!^p1fa8h*&sm16_v&8l0g(m#zv80h$7^28='
+#
+# When running in production the secret key **must** be provided via the
+# `SECRET_KEY` environment variable.  A sensible default is provided here
+# to allow the development server to run without additional configuration.
+SECRET_KEY = os.environ.get('SECRET_KEY', 'change-me-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv("DEBUG", "False"))
+# The `DEBUG` flag is read from the environment.  Any value other than the
+# string "True" (case-sensitive) will result in debug being disabled.
+DEBUG = bool(os.environ.get('DEBUG', 'False'))
 
-ALLOWED_HOSTS = []
+# A comma‑separated list of hostnames that this site can serve.  If no
+# hosts are provided via the `ALLOWED_HOSTS` environment variable, the
+# application will default to serving only localhost.
+_hosts = os.environ.get('ALLOWED_HOSTS', '')
+ALLOWED_HOSTS = [h.strip() for h in _hosts.split(',') if h.strip()] or []
 
 
 # Application definition
@@ -38,6 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third‑party apps
+    'qr_code',  # QR code generation
+    # project apps
     'website',
     'photobooth',
 ]
@@ -119,4 +132,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# URL prefix for static files.  Static files will be served from this path
+# when using `django.contrib.staticfiles`.
+STATIC_URL = '/static/'
+
+# Absolute filesystem path where `collectstatic` will place collected static
+# files.  During development this directory can be ignored, but in
+# production the web server should be configured to serve files from
+# `STATIC_ROOT`.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files (user uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Use BigAutoField by default for model primary keys.
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

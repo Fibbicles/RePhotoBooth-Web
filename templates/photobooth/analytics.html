@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Re‑Photo Booth</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #111;
+            color: #fff;
+            padding: 1rem;
+        }
+        h1 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .stat {
+            background: #222;
+            padding: 1rem;
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+        }
+        .stat h2 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .stat p {
+            margin: 0.3rem 0 0;
+            font-size: 1rem;
+            color: #ccc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid #333;
+            padding: 0.6rem;
+            text-align: left;
+        }
+        th {
+            background: #222;
+        }
+    </style>
+</head>
+<body>
+    <h1>Analytics</h1>
+    <div class="stats">
+        <div class="stat">
+            <h2>{{ total_events }}</h2>
+            <p>Active Events</p>
+        </div>
+        <div class="stat">
+            <h2>{{ total_photos }}</h2>
+            <p>Total Photos</p>
+        </div>
+    </div>
+    <h2>Top Events</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Photos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in top_events %}
+            <tr>
+                <td>{{ event.name }}</td>
+                <td>{{ event.num_photos }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No data available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

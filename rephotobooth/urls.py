@@ -16,8 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
+# Root URL configuration for the Re‑Photo Booth project.  The photobooth app
+# handles nearly all user‑facing routes.  The admin interface is available
+# under the /admin/ prefix.  During development we also serve media files
+# directly from the filesystem.
 urlpatterns = [
-    path('app/', include("photobooth.urls")),
+    # Frontend photobooth application
     path('admin/', admin.site.urls),
+    path("", include("photobooth.urls")),
+    # Django admin for managing events, themes, booths and photos
 ]
+
+# In development only, serve uploaded media and static files directly.  In
+# production these should be served by the web server (e.g., nginx).
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

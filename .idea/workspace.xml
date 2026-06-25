@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b43a536f-a3a3-4257-9e63-48c8d687a521" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/RePhotoBooth-Web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RePhotoBooth-Web.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/photobooth/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/photobooth/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/photobooth/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/photobooth/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/photobooth/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/photobooth/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/photobooth/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/photobooth/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/photobooth/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/photobooth/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/photobooth/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/photobooth/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rephotobooth/asgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/rephotobooth/asgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rephotobooth/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/rephotobooth/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rephotobooth/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/rephotobooth/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rephotobooth/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/rephotobooth/wsgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/photobooth.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/photobooth.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/website/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/website/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/website/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/website/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/website/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Fibbicles&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Fibbicles/RePhotoBooth-Web.git&quot;,
+    &quot;accountId&quot;: &quot;e92f08c4-b4d5-4973-b02b-d60f13c9be2e&quot;
+  }
+}</component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.8835396131806421" />
+      <entry key="MS500" value="6.2285785800555775" />
+      <entry key="S2" value="13.187585059760906" />
+      <entry key="S5" value="19.64528436483515" />
+      <entry key="S10" value="24.41462077272095" />
+      <entry key="S30" value="36.62288030430112" />
+      <entry key="S60" value="46.687187644519135" />
+      <entry key="M2" value="54.74175898956287" />
+      <entry key="M5" value="61.03430316344993" />
+      <entry key="M10" value="63.43244175392876" />
+      <entry key="M15" value="64.26885688927956" />
+      <entry key="M30" value="65.12455147518497" />
+      <entry key="H1" value="65.55977637075117" />
+      <entry key="H2" value="65.7792595364775" />
+      <entry key="H4" value="65.88947212748828" />
+      <entry key="D1" value="65.98155675262768" />
+      <entry key="W1" value="65.9973647126527" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.8016594464935543" />
+      <entry key="MS500" value="6.165655239601641" />
+      <entry key="S2" value="13.155651696670176" />
+      <entry key="S5" value="19.626710963248" />
+      <entry key="S10" value="24.403106553421487" />
+      <entry key="S30" value="36.616145731630375" />
+      <entry key="S60" value="46.68202864766823" />
+      <entry key="M2" value="54.73830425462826" />
+      <entry key="M5" value="61.03261336943097" />
+      <entry key="M10" value="63.4315344968552" />
+      <entry key="M15" value="64.26823724394905" />
+      <entry key="M30" value="65.12423399718777" />
+      <entry key="H1" value="65.55961566931646" />
+      <entry key="H2" value="65.77917868894906" />
+      <entry key="H4" value="65.88943157873798" />
+      <entry key="D1" value="65.98154997707657" />
+      <entry key="W1" value="65.99736374428919" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="3FX39Hq6gSCL1NY2XcijUCbGYGL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Django Server.RePhotoBooth-Web.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="RePhotoBooth-Web" type="Python.DjangoServer" factoryName="Django server">
+      <module name="RePhotoBooth-Web" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DEBUG" value="True" />
+        <env name="DJANGO_SETTINGS_MODULE" value="rephotobooth.settings" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.12 (RePhotoBooth-Web)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="RUN_TOOL" value="" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-c59985aa861c-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.24374.152" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b43a536f-a3a3-4257-9e63-48c8d687a521" name="Changes" comment="" />
+      <created>1782207435365</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1782207435365</updated>
+      <workItem from="1782207436872" duration="65000" />
+      <workItem from="1782207947164" duration="1166000" />
+      <workItem from="1782371338996" duration="12000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

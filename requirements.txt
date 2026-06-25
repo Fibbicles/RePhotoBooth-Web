@@ -1,1 +1,5 @@
 django
+# Additional dependencies for photo booth functionality
+Pillow  # image processing
+django-qr-code  # QR code generation
+segno  # lightweight QR code generation library used by the Photo model

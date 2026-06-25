@@ -1,0 +1,486 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event.name }} Booth - Re‑Photo Booth</title>
+    <style>
+        :root {
+            /* Theme colours from the event (fallback to defaults) */
+            --primary: {{ event.theme.primary_color|default:'#111111' }};
+            --secondary: {{ event.theme.secondary_color|default:'#ffffff' }};
+            --accent: {{ event.theme.secondary_color|default:'#58d68d' }};
+            --font-family: {{ event.theme.font_family|default:'system-ui, sans-serif' }};
+        }
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background: var(--primary);
+            color: var(--secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 1rem 0.5rem;
+        }
+        header img.logo {
+            max-height: 80px;
+            max-width: 60%;
+            object-fit: contain;
+        }
+        main {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .camera-container {
+            position: relative;
+            width: 90%;
+            max-width: 700px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+        }
+        video, canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        #overlayFrame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        #countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-weight: bold;
+            color: var(--secondary);
+            display: none;
+            pointer-events: none;
+        }
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .controls button {
+            padding: 0.8rem 2rem;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 999px;
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .filters button {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--secondary);
+            border-radius: 8px;
+            background: var(--primary);
+            color: var(--secondary);
+            cursor: pointer;
+        }
+        .filters button.active {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        /* Mode selection buttons */
+        .modes {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .modes button {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--secondary);
+            border-radius: 8px;
+            background: var(--primary);
+            color: var(--secondary);
+            cursor: pointer;
+        }
+        .modes button.active {
+            background: var(--accent);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        {% if event.logo %}
+            <img src="{{ event.logo.url }}" class="logo" alt="{{ event.name }} logo">
+        {% else %}
+            <h2>{{ event.name }}</h2>
+        {% endif %}
+
+        {% if event.sponsor_logo %}
+            <div style="margin-top:0.5rem;">
+                <img src="{{ event.sponsor_logo.url }}" alt="Sponsor logo" style="max-height:60px; max-width:80%; object-fit:contain;">
+            </div>
+        {% endif %}
+    </header>
+    <main>
+        <div class="camera-container">
+            <!-- Camera preview -->
+            <video id="camera" autoplay playsinline></video>
+            <!-- Canvas for captured photo -->
+            <canvas id="snapshot" style="display:none;"></canvas>
+            <!-- Overlay frame -->
+            {% if event.overlay_frame %}
+            <img id="overlayFrame" src="{{ event.overlay_frame.url }}" alt="Frame overlay">
+            {% else %}
+            <img id="overlayFrame" style="display:none;" src="" alt="Frame overlay">
+            {% endif %}
+            <!-- Countdown indicator -->
+            <div id="countdown">3</div>
+        </div>
+        <div class="controls">
+            {% if event.requires_consent %}
+            <div style="margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;">
+                <input type="checkbox" id="consentCheckbox">
+                <label for="consentCheckbox">{{ event.consent_text }}</label>
+            </div>
+            {% endif %}
+            <button id="startButton">Start</button>
+            <button id="captureButton" style="display:none;">Take Photo</button>
+            <button id="retakeButton" style="display:none;">Retake</button>
+            <button id="doneButton" style="display:none;">Done</button>
+            <!-- Filter selection -->
+            <div class="filters" id="filterButtons" style="display:none;">
+                <button data-filter="none" class="active">Normal</button>
+                <button data-filter="bw">B&amp;W</button>
+                <button data-filter="vivid">Vivid</button>
+            </div>
+            <!-- Mode selection -->
+            <div class="modes" id="modeButtons" style="display:none;">
+                <button data-mode="single" class="active">Single</button>
+                <button data-mode="strip">Photo Strip</button>
+            </div>
+        </div>
+    </main>
+    <script>
+    (function() {
+        const video = document.getElementById("camera");
+        const canvas = document.getElementById("snapshot");
+        const overlayFrame = document.getElementById("overlayFrame");
+        const countdownEl = document.getElementById("countdown");
+        const startButton = document.getElementById("startButton");
+        const captureButton = document.getElementById("captureButton");
+        const retakeButton = document.getElementById("retakeButton");
+        const doneButton = document.getElementById("doneButton");
+        const filtersDiv = document.getElementById("filterButtons");
+        let stream = null;
+        let selectedFilter = 'none';
+        let selectedMode = 'single';
+        const filterMap = {
+            'none': 'brightness(1) contrast(1) saturate(1)',
+            'bw': 'grayscale(1) contrast(1.2)',
+            'vivid': 'brightness(1.1) contrast(1.3) saturate(1.4)'
+        };
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    },
+                    audio: false
+                });
+                video.srcObject = stream;
+            } catch (error) {
+                alert('Could not access camera: ' + error);
+            }
+        }
+
+        function updateFilterButtons() {
+            const buttons = filtersDiv.querySelectorAll('button');
+            buttons.forEach(btn => {
+                if (btn.dataset.filter === selectedFilter) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function applyVideoFilter() {
+            video.style.filter = filterMap[selectedFilter];
+        }
+
+        function applyCanvasFilter(ctx) {
+            ctx.filter = filterMap[selectedFilter];
+        }
+
+        filtersDiv.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            selectedFilter = btn.dataset.filter;
+            updateFilterButtons();
+            applyVideoFilter();
+        });
+
+        // Mode selection buttons
+        const modeButtonsDiv = document.getElementById('modeButtons');
+        modeButtonsDiv.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            selectedMode = btn.dataset.mode;
+            // update active styles
+            const buttons = modeButtonsDiv.querySelectorAll('button');
+            buttons.forEach((b) => {
+                if (b.dataset.mode === selectedMode) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+        });
+
+        function countdown(seconds, callback) {
+            countdownEl.style.display = 'block';
+            let count = seconds;
+            countdownEl.textContent = count;
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else {
+                    clearInterval(interval);
+                    countdownEl.style.display = 'none';
+                    callback();
+                }
+            }, 1000);
+        }
+
+        function capturePhoto() {
+            // Set canvas size
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            // Apply filter for drawing
+            applyCanvasFilter(ctx);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Draw overlay frame
+            if (overlayFrame && overlayFrame.src && overlayFrame.style.display !== 'none') {
+                const img = new Image();
+                img.src = overlayFrame.src;
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+            }
+        }
+
+        // Capture multiple photos for a strip
+        async function captureStripPhotos(count) {
+            const images = [];
+            const captureOne = (remaining) => {
+                countdown(3, () => {
+                    // capture one photo into canvas
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    applyCanvasFilter(ctx);
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    if (overlayFrame && overlayFrame.src && overlayFrame.style.display !== 'none') {
+                        const img = new Image();
+                        img.src = overlayFrame.src;
+                        img.onload = () => {
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            images.push(canvas.toDataURL('image/jpeg', 0.95));
+                            if (remaining > 1) {
+                                captureOne(remaining - 1);
+                            } else {
+                                combineStrip(images);
+                            }
+                        };
+                    } else {
+                        images.push(canvas.toDataURL('image/jpeg', 0.95));
+                        if (remaining > 1) {
+                            captureOne(remaining - 1);
+                        } else {
+                            combineStrip(images);
+                        }
+                    }
+                });
+            };
+            captureOne(count);
+        }
+
+        function combineStrip(images) {
+            // create a temporary canvas to stack images vertically
+            const temp = document.createElement('canvas');
+            const width = video.videoWidth;
+            const height = video.videoHeight;
+            temp.width = width;
+            temp.height = height * images.length;
+            const ctx = temp.getContext('2d');
+            images.forEach((dataUrl, idx) => {
+                const img = new Image();
+                img.src = dataUrl;
+                // synchronous draw may not wait for load; but browsers will draw only after loaded
+                ctx.drawImage(img, 0, idx * height, width, height);
+            });
+            // draw combined image onto the visible canvas
+            canvas.width = temp.width;
+            canvas.height = temp.height;
+            canvas.getContext('2d').drawImage(temp, 0, 0);
+            // update UI
+            video.style.display = 'none';
+            canvas.style.display = 'block';
+            captureButton.style.display = 'none';
+            retakeButton.style.display = 'inline-block';
+            doneButton.style.display = 'inline-block';
+        }
+
+        async function savePhoto() {
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            const formData = new FormData();
+            formData.append('image', dataUrl);
+            try {
+                const response = await fetch(`/{{ event.slug }}/save/`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = result.photo_url;
+                } else {
+                    // Save to offline queue if server returns error
+                    queueOffline(dataUrl);
+                    alert('Failed to save photo; it will be uploaded when connectivity returns');
+                }
+            } catch (err) {
+                // Network error – queue for offline upload
+                queueOffline(dataUrl);
+                alert('You are offline; your photo will upload automatically when online.');
+            }
+        }
+
+        function queueOffline(dataUrl) {
+            try {
+                const queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                queue.push({ slug: '{{ event.slug }}', image: dataUrl });
+                localStorage.setItem('offlineQueue', JSON.stringify(queue));
+            } catch (e) {
+                console.error('Could not queue photo offline', e);
+            }
+        }
+
+        async function flushOfflineQueue() {
+            try {
+                let queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                if (!Array.isArray(queue) || queue.length === 0) return;
+                const remaining = [];
+                for (const item of queue) {
+                    const formData = new FormData();
+                    formData.append('image', item.image);
+                    try {
+                        const response = await fetch(`/${item.slug}/save/`, {
+                            method: 'POST',
+                            body: formData,
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        });
+                        const result = await response.json();
+                        if (!result.success) {
+                            remaining.push(item);
+                        }
+                    } catch (err) {
+                        remaining.push(item);
+                    }
+                }
+                localStorage.setItem('offlineQueue', JSON.stringify(remaining));
+            } catch (e) {
+                console.error('Error flushing offline queue', e);
+            }
+        }
+
+        // Attempt to flush offline queue on page load and when back online
+        window.addEventListener('load', flushOfflineQueue);
+        window.addEventListener('online', flushOfflineQueue);
+
+        // Marketing consent: disable start button until consent checkbox is checked
+        const consentCheckbox = document.getElementById('consentCheckbox');
+        if (consentCheckbox) {
+            startButton.disabled = true;
+            consentCheckbox.addEventListener('change', () => {
+                startButton.disabled = !consentCheckbox.checked;
+            });
+        }
+
+        startButton.addEventListener('click', async () => {
+            startButton.style.display = 'none';
+            captureButton.style.display = 'inline-block';
+            filtersDiv.style.display = 'flex';
+            modeButtonsDiv.style.display = 'flex';
+            await startCamera();
+            applyVideoFilter();
+        });
+        captureButton.addEventListener('click', () => {
+            captureButton.disabled = true;
+            if (selectedMode === 'strip') {
+                captureStripPhotos(4);
+            } else {
+                countdown(3, () => {
+                    capturePhoto();
+                    video.style.display = 'none';
+                    canvas.style.display = 'block';
+                    captureButton.style.display = 'none';
+                    retakeButton.style.display = 'inline-block';
+                    doneButton.style.display = 'inline-block';
+                });
+            }
+        });
+        retakeButton.addEventListener('click', () => {
+            // reset UI
+            canvas.style.display = 'none';
+            video.style.display = 'block';
+            captureButton.style.display = 'inline-block';
+            retakeButton.style.display = 'none';
+            doneButton.style.display = 'none';
+            captureButton.disabled = false;
+        });
+        doneButton.addEventListener('click', () => {
+            doneButton.disabled = true;
+            savePhoto();
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Photo - Re‑Photo Booth</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #111;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .photo-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+        }
+        .photo-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .qr-wrapper {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .qr-wrapper img {
+            width: 200px;
+            height: 200px;
+        }
+        a.download-link {
+            margin-top: 1rem;
+            padding: 0.8rem 1.6rem;
+            border-radius: 999px;
+            background: #58d68d;
+            color: #111;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Thank you!</h1>
+    <div class="photo-wrapper">
+        <img src="{{ photo.image.url }}" alt="Your photo">
+    </div>
+    {% if photo.qr_code %}
+    <div class="qr-wrapper">
+        <p>Scan this QR code to download your photo</p>
+        <img src="{{ photo.qr_code.url }}" alt="QR code">
+    </div>
+    {% endif %}
+    <a class="download-link" href="{{ photo.image.url }}" download>Download Photo</a>
+
+    {% if not photo.email %}
+    <div style="margin-top: 1rem; text-align: center;">
+        <form id="emailForm" style="display:inline-flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <input type="email" id="email" name="email" placeholder="Your email" required style="padding:0.6rem 1rem; border-radius:999px; border:none; width:220px;">
+            <button type="submit" style="padding:0.6rem 1.2rem; border:none; border-radius:999px; background:#58d68d; color:#111; font-weight:bold; cursor:pointer;">Send to my email</button>
+        </form>
+        <p id="emailStatus" style="margin-top:0.5rem;"></p>
+    </div>
+    {% else %}
+    <p style="margin-top:1rem;">Photo sent to {{ photo.email }}.</p>
+    {% endif %}
+
+    <!-- Print button -->
+    <div style="margin-top: 1rem; text-align: center;">
+        <form id="printForm" style="display:inline-block;">
+            <button type="submit" style="padding:0.6rem 1.2rem; border:none; border-radius:999px; background:#58d68d; color:#111; font-weight:bold; cursor:pointer;">Print Photo</button>
+        </form>
+        <p id="printStatus" style="margin-top:0.5rem;"></p>
+    </div>
+    <script>
+    (function(){
+        const printForm = document.getElementById('printForm');
+        if(printForm) {
+            printForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const statusEl = document.getElementById('printStatus');
+                statusEl.textContent = 'Printing...';
+                try {
+                    const response = await fetch(`/photo/{{ photo.guid }}/print/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        statusEl.textContent = 'Print job sent!';
+                    } else {
+                        statusEl.textContent = result.error || 'Failed to print';
+                    }
+                } catch(err) {
+                    statusEl.textContent = 'Error printing photo';
+                }
+            });
+        }
+    })();
+    </script>
+    <script>
+    (function() {
+        const form = document.getElementById('emailForm');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const emailInput = document.getElementById('email');
+                const statusEl = document.getElementById('emailStatus');
+                const email = emailInput.value;
+                statusEl.textContent = 'Sending...';
+                const formData = new FormData();
+                formData.append('email', email);
+                try {
+                    const response = await fetch(`/photo/{{ photo.guid }}/email/`, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        statusEl.textContent = 'Email sent!';
+                        form.style.display = 'none';
+                    } else {
+                        statusEl.textContent = result.error || 'Failed to send email';
+                    }
+                } catch (err) {
+                    statusEl.textContent = 'Error sending email';
+                }
+            });
+        }
+    })();
+    </script>
+</body>
+</html>
